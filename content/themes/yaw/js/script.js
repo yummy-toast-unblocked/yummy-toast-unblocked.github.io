@@ -54,21 +54,94 @@ $(function () {
       });
     }
   }
+  //   async function fetchMoreGames(amount, sort_by) {
+  //     try {
+  //       const response = await $.ajax({
+  //         url: "/includes/fetch.php",
+  //         type: "POST",
+  //         dataType: "json",
+  //         data: { amount: amount, offset: last_offset, sort_by: sort_by },
+  //       });
+  //       appendFetchedGames(response);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+
+  // async function fetchMoreGames(amount, sort_by) {
+  //   try {
+  //     const response = await $.ajax({
+  //       url: "https://yummy-toast-unblocked.github.io/includes/fetch.php",
+  //       type: "POST",
+  //       dataType: "json",
+  //       data: { amount: amount, offset: last_offset, sort_by: sort_by },
+  //     });
+  //     appendFetchedGames(response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
   async function fetchMoreGames(amount, sort_by) {
     try {
-      const response = await $.ajax({
-        url: "https://yummy-toast-unblocked.github.io/includes/fetch.php",
-        type: "POST",
-        dataType: "json",
-        data: { amount: amount, offset: last_offset, sort_by: sort_by },
-      });
-      appendFetchedGames(response);
+      const response = await fetch(
+        "https://yummy-toast-unblocked.github.io/data/search-data.json"
+      );
+      if (!response.ok) throw new Error("Failed to fetch game data");
+      const data = await response.json();
+      appendFetchedGames(data.slice(last_offset, last_offset + amount));
     } catch (error) {
-      console.log(error);
+      console.log("Error fetching games:", error);
     }
   }
+
+  // function appendFetchedGames(data) {
+  //   last_offset += data.length;
+  //   const templateHTML = $(".item-append-template").html();
+  //   data.forEach((item) => {
+  //     let rating = 0;
+  //     item["upvote"] = Number(item["upvote"]);
+  //     item["downvote"] = Number(item["downvote"]);
+  //     let totalRevs = item["upvote"] + item["downvote"];
+  //     if (totalRevs > 0) {
+  //       rating = Math.round(
+  //         (item["upvote"] / (item["upvote"] + item["downvote"])) * 5
+  //       );
+  //     }
+  //     let clonedHTML = templateHTML;
+  //     console.log(item["title"]);
+  //     clonedHTML = clonedHTML.replace(/{{slug}}/g, item["slug"]);
+  //     clonedHTML = clonedHTML.replace(/{{thumbnail}}/g, item["thumb_2"]);
+  //     clonedHTML = clonedHTML.replace(/{{title}}/g, item["title"]);
+  //     clonedHTML = clonedHTML.replace(/{{rating}}/g, rating);
+  //     const clonedElement = $(clonedHTML);
+  //     newGamesContainer.append(clonedElement);
+  //   });
+  //   if (data.length < load_amount) {
+  //     $(".btn-load-more-games").remove();
+  //   }
+  // }
   function appendFetchedGames(data) {
     last_offset += data.length;
+    // const templateHTML = $(".item-append-template").html();
+    // data.forEach((item) => {
+    //   let rating = 0;
+    //   item["upvote"] = Number(item["upvote"]);
+    //   item["downvote"] = Number(item["downvote"]);
+    //   let totalRevs = item["upvote"] + item["downvote"];
+    //   if (totalRevs > 0) {
+    //     rating = Math.round(
+    //       (item["upvote"] / (item["upvote"] + item["downvote"])) * 5
+    //     );
+    //   }
+    //   let clonedHTML = templateHTML;
+    //   console.log(item["title"]);
+    //   clonedHTML = clonedHTML.replace(/{{slug}}/g, item["slug"]);
+    //   clonedHTML = clonedHTML.replace(/{{thumbnail}}/g, item["thumb"]);
+    //   clonedHTML = clonedHTML.replace(/{{title}}/g, item["title"]);
+    //   clonedHTML = clonedHTML.replace(/{{rating}}/g, rating);
+    //   const clonedElement = $(clonedHTML);
+    //   newGamesContainer.append(clonedElement);
+    // });
     const templateHTML = $(".item-append-template").html();
     data.forEach((item) => {
       let rating = 0;
@@ -81,13 +154,12 @@ $(function () {
         );
       }
       let clonedHTML = templateHTML;
-      console.log(item["title"]);
-      clonedHTML = clonedHTML.replace(/{{slug}}/g, item["slug"]);
-      clonedHTML = clonedHTML.replace(/{{thumbnail}}/g, item["thumb_2"]);
-      clonedHTML = clonedHTML.replace(/{{title}}/g, item["title"]);
-      clonedHTML = clonedHTML.replace(/{{rating}}/g, rating);
+      clonedHTML = clonedHTML.replace(/{{slug}}/g, item.slug);
+      clonedHTML = clonedHTML.replace(/{{thumbnail}}/g, item.thumb);
+      clonedHTML = clonedHTML.replace(/{{title}}/g, item.title);
       const clonedElement = $(clonedHTML);
-      newGamesContainer.append(clonedElement);
+      clonedElement.find("img").attr("src", item.thumb); // Ensure 'src' is set
+      $("#section-new-games").append(clonedElement);
     });
     if (data.length < load_amount) {
       $(".btn-load-more-games").remove();
