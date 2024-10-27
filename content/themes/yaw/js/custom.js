@@ -104,9 +104,7 @@ function displayResults(results) {
   // If no results, redirect to the homepage without parameters
   if (results.length === 0) {
     hideSearchingIndicator(); // Hide indicator before redirect
-    window.location.replace(
-      "https://yummy-toast-unblocked.github.io/game/404/"
-    );
+    // window.location.replace("https://yummy-toast-unblocked.github.io/game/404/");
     return;
   }
   const resultsContainer = document.getElementById("searchResults");
@@ -129,13 +127,13 @@ function displayResults(results) {
       }
     });
   }
-  const searchAllLi = document.createElement("li");
-  searchAllLi.className = "search-all";
-  searchAllLi.textContent = "Search All";
-  searchAllLi.addEventListener("click", function () {
-    document.querySelector(".search-bar").submit();
-  });
-  resultsContainer.appendChild(searchAllLi);
+  // const searchAllLi = document.createElement("li");
+  // searchAllLi.className = "search-all";
+  // searchAllLi.textContent = "Search All";
+  // searchAllLi.addEventListener("click", function () {
+  //   document.querySelector(".search-bar").submit();
+  // });
+  // resultsContainer.appendChild(searchAllLi);
   hideSearchingIndicator();
   resultsContainer.style.display = "block";
 }
